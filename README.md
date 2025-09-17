@@ -2,6 +2,44 @@
 
 A modern, professional inventory management web application built with Flask. Features a clean, responsive UI with Chennai-centric business workflow optimization.
 
+## 📸 Application Screenshots
+
+### 🏠 Dashboard - Main Overview
+![Dashboard](screenshots/dashboard.png)
+*Main dashboard showing real-time inventory statistics, recent activity, and quick action buttons*
+
+### 📦 Product Management
+![Product List](screenshots/products-list.png)
+*Complete product catalog with add, edit, view, and delete capabilities*
+
+![Add Product](screenshots/add-product.png)
+*User-friendly product creation form with validation*
+
+### 🏪 Location Management
+![Location List](screenshots/locations-list.png)
+*Warehouse and storage location management interface*
+
+![Add Location](screenshots/add-location.png)
+*Location creation form for setting up warehouses*
+
+### 📊 Stock Movements
+![Movement List](screenshots/movements-list.png)
+*Complete movement tracking with stock in, out, and transfers*
+
+![Record Movement](screenshots/record-movement.png)
+*Movement recording form with dropdown selections*
+
+### 📈 Reports & Analytics
+![Balance Report](screenshots/balance-report.png)
+*Real-time inventory balance report with interactive charts*
+
+![Charts Dashboard](screenshots/charts-dashboard.png)
+*Advanced analytics with Chart.js visualizations*
+
+### 📱 Responsive Design
+![Mobile View](screenshots/mobile-view.png)
+*Mobile-optimized responsive interface*
+
 ## ✨ Features
 
 ### Core Functionality
@@ -202,3 +240,63 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📞 Support
 
 For support, email your-email@domain.com or create an issue in the GitHub repository.
+
+## 🚀 GitHub Deployment Guide
+
+### Step 1: Create GitHub Repository
+1. Go to [GitHub](https://github.com) and sign in
+2. Click the "+" icon and select "New repository"
+3. Name your repository (e.g., `inventory-management-system`)
+4. Add a description: "Modern Flask inventory management system with responsive UI"
+5. Keep it public for portfolio showcase
+6. **Don't** initialize with README (we already have one)
+7. Click "Create repository"
+
+### Step 2: Connect Local Repository to GitHub
+```bash
+# Add GitHub as remote origin
+git remote add origin https://github.com/YOUR_USERNAME/inventory-management-system.git
+
+# Push to GitHub
+git branch -M main
+git push -u origin main
+```
+
+### Step 3: Add Screenshots
+After pushing to GitHub:
+1. Take screenshots of each page while the app is running
+2. Save them in the `screenshots/` folder with these names:
+   - `dashboard.png` - Main dashboard
+   - `products-list.png` - Products listing page
+   - `add-product.png` - Add product form
+   - `locations-list.png` - Locations listing page
+   - `add-location.png` - Add location form
+   - `movements-list.png` - Movements listing page
+   - `record-movement.png` - Record movement form
+   - `balance-report.png` - Balance report with charts
+   - `charts-dashboard.png` - Charts and analytics page
+   - `mobile-view.png` - Mobile responsive view
+
+3. Commit and push the screenshots:
+```bash
+git add screenshots/
+git commit -m "Add application screenshots for documentation"
+git push
+```
+
+### Step 4: Customize for Your Profile
+Update these sections in README.md:
+- Replace `YOUR_USERNAME` with your GitHub username
+- Update email in Support section
+- Add your name to Contributing section
+- Update the clone URL in Quick Start
+
+### 🎯 Portfolio Tips
+- ⭐ Star your own repository
+- 📝 Write a detailed commit history
+- 🏷️ Add relevant tags/topics: `flask`, `python`, `inventory`, `web-app`, `responsive`
+- 📖 Pin the repository to your profile
+- 🔗 Add the live demo link (if deployed)
+
+**Your Flask Inventory Management System is now ready to showcase on GitHub!** 🌟
+
