@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Inventory Management System{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📦 Inventory Management System</h1>
+      <div class="header-subtitle">Manage inventory and fulfill orders - the right way</div>
+    </header>
+    
+    <nav>
+      <div class="nav-container">
+        <a href="/" {% if request.endpoint == 'index' %}class="active"{% endif %}>🏠 Dashboard</a>
+        <a href="/products" {% if request.endpoint.startswith('products') %}class="active"{% endif %}>📋 Products</a>
+        <a href="/locations" {% if request.endpoint.startswith('locations') %}class="active"{% endif %}>🏪 Locations</a>
+        <a href="/movements" {% if request.endpoint.startswith('movements') %}class="active"{% endif %}>📦 Movements</a>
+        <div class="nav-dropdown {% if request.endpoint.startswith('reports') %}active{% endif %}">
+          <a href="/reports/balance" class="nav-dropdown-toggle">📊 Reports ▼</a>
+          <div class="nav-dropdown-menu">
+            <a href="/reports/balance">📋 Balance Report</a>
+            <a href="/reports/charts">📈 Charts & Analytics</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">
+              {% if category == 'error' %}❌{% elif category == 'success' %}✅{% else %}ℹ️{% endif %} {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</body>
+</html>

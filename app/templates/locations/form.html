@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>{{ 'Edit' if location else 'Create' }} Location</h2>
+<form method="post">
+  {% if not location %}
+  <div><label>ID <input name="id" required /></label></div>
+  {% endif %}
+  <div><label>Name <input name="name" value="{{ location.name if location }}" required /></label></div>
+  <button type="submit">Save</button>
+  <a href="{{ url_for('locations.list_locations') }}">Cancel</a>
+</form>
+{% endblock %}

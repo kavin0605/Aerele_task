@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+  <h2>📦 Product Movements</h2>
+  <a href="{{ url_for('movements.create_movement') }}" class="btn btn-success">➕ Record Movement</a>
+</div>
+
+{% if movements %}
+<table class="table">
+  <thead>
+    <tr><th>ID</th><th>Timestamp</th><th>Product</th><th>From Location</th><th>To Location</th><th>Quantity</th><th>Type</th><th>Actions</th></tr>
+  </thead>
+  <tbody>
+    {% for m in movements %}
+    <tr>
+      <td><strong>{{ m.id }}</strong></td>
+      <td>{{ m.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ m.product.name }}</td>
+      <td>{{ m.from_location.name if m.from_location else '-' }}</td>
+      <td>{{ m.to_location.name if m.to_location else '-' }}</td>
+      <td><strong>{{ m.qty }}</strong></td>
+      <td>
+        {% if m.from_location and m.to_location %}
+          <span style="color: #f39c12;">🔄 Transfer</span>
+        {% elif m.to_location %}
+          <span style="color: #27ae60;">📥 In</span>
+        {% else %}
+          <span style="color: #e74c3c;">📤 Out</span>
+        {% endif %}
+      </td>
+      <td>
+        <form action="{{ url_for('movements.delete_movement', mid=m.id) }}" method="post" style="display:inline" onsubmit="return confirm('Delete this movement record?');">
+          <button type="submit" class="btn btn-danger">🗑️ Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="card">
+  <p>No movements recorded yet. <a href="{{ url_for('movements.create_movement') }}">Record your first movement</a>.</p>
+</div>
+{% endif %}
+{% endblock %}

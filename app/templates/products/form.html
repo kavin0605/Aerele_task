@@ -1,0 +1,277 @@
+{% extends 'layout.html' %}
+{% block title %}{{ 'Edit Product' if product else 'Create Product' }} - Inventory Management{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">{{ '✏️ Edit Product' if product else '➕ Create New Product' }}</h1>
+</div>
+
+<div class="form-container">
+  <div class="form-header">
+    <h2 class="form-title">Product Information</h2>
+  </div>
+  
+  <form method="post">
+    <div class="form-grid">
+      {% if not product %}
+      <div class="form-group">
+        <label for="id">Product ID *</label>
+        <input type="text" id="id" name="id" required placeholder="e.g., P-001, SKU-123" />
+        <small style="color: #6c757d; font-size: 0.85rem;">Unique identifier for the product</small>
+      </div>
+      {% endif %}
+      
+      <div class="form-group">
+        <label for="name">Product Name *</label>
+        <input type="text" id="name" name="name" value="{{ product.name if product }}" required placeholder="e.g., Widget A, Premium Service" />
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="description">Product Description</label>
+      <textarea id="description" name="description" placeholder="Detailed description of the product, features, specifications...">{{ product.description if product }}</textarea>
+    </div>
+    
+    {% if not product %}
+    <div class="form-section">
+      <h3 class="form-section-title">📦 Initial Stock (Optional)</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="initial_stock">Initial Stock Quantity</label>
+          <input type="number" id="initial_stock" name="initial_stock" min="0" value="0" placeholder="0" />
+          <small style="color: #6c757d; font-size: 0.85rem;">Starting inventory quantity for this product</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="initial_location">Initial Location</label>
+          <select id="initial_location" name="initial_location">
+            <option value="">Select location...</option>
+            {% for location in locations %}
+            <option value="{{ location.id }}" {% if location.id == 'CHN-MAIN' %}selected{% endif %}>{{ location.name }}</option>
+            {% endfor %}
+          </select>
+          <small style="color: #6c757d; font-size: 0.85rem;">Chennai Main Branch is pre-selected as default</small>
+        </div>
+      </div>
+      <div class="info-note">
+        <strong>Note:</strong> If you specify initial stock, you must also select a location. You can always add more stock later through movements.
+      </div>
+    </div>
+    {% endif %}
+    
+    {% if product %}
+    <div class="form-section">
+      <h3 class="form-section-title">📦 Current Stock & Management</h3>
+      
+      {% if current_stock %}
+      <div class="current-stock-display">
+        <h4>Current Stock Levels:</h4>
+        <div class="stock-grid">
+          {% for stock in current_stock %}
+          <div class="stock-item">
+            <span class="stock-location">{{ stock.location_name }}</span>
+            <span class="stock-quantity">{{ stock.quantity }} units</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="info-note">
+        <strong>No Stock:</strong> This product currently has no inventory at any location.
+      </div>
+      {% endif %}
+      
+      <div class="stock-management">
+        <h4>Stock Management Actions:</h4>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="stock_action">Action</label>
+            <select id="stock_action" name="stock_action">
+              <option value="">-- No Stock Changes --</option>
+              <option value="add">📥 Add Stock</option>
+              <option value="remove">📤 Remove Stock</option>
+              <option value="transfer">🔄 Transfer Stock</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="stock_quantity">Quantity</label>
+            <input type="number" id="stock_quantity" name="stock_quantity" min="1" placeholder="Enter quantity" />
+          </div>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="stock_location">Location</label>
+            <select id="stock_location" name="stock_location">
+              <option value="">Select location...</option>
+              {% for location in locations %}
+              <option value="{{ location.id }}" {% if location.id == 'CHN-MAIN' %}selected{% endif %}>{{ location.name }}</option>
+              {% endfor %}
+            </select>
+            <small style="color: #6c757d; font-size: 0.85rem;">Source location (for remove/transfer) or destination (for add)</small>
+          </div>
+          
+          <div class="form-group" id="transfer_location_group" style="display: none;">
+            <label for="transfer_to_location">Transfer To</label>
+            <select id="transfer_to_location" name="transfer_to_location">
+              <option value="">Select destination...</option>
+              {% for location in locations %}
+              <option value="{{ location.id }}">{{ location.name }}</option>
+              {% endfor %}
+            </select>
+            <small style="color: #6c757d; font-size: 0.85rem;">Destination location for transfer</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    
+    <div class="form-actions">
+      <button type="submit" class="btn btn-success">💾 {{ 'Update Product' if product else 'Create Product' }}</button>
+      <a href="{{ url_for('products.list_products') }}" class="btn btn-secondary">❌ Cancel</a>
+    </div>
+  </form>
+</div>
+
+{% if not product %}
+<div class="info-box">
+  <h4>💡 Product Management Tips</h4>
+  <ul>
+    <li>Use clear, descriptive product names for easy identification</li>
+    <li>Product IDs should be unique and follow your naming convention</li>
+    <li>Add detailed descriptions to help with inventory management</li>
+    <li>Consider including category, brand, or model information</li>
+  </ul>
+</div>
+{% endif %}
+{% endblock %}
+
+<style>
+.form-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.form-section-title {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.info-note {
+  background: #e3f2fd;
+  border: 1px solid #bbdefb;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #1565c0;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-group select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.current-stock-display {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.stock-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.stock-item {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stock-location {
+  font-weight: 500;
+  color: #495057;
+}
+
+.stock-quantity {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.stock-management {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 15px;
+}
+
+.stock-management h4 {
+  margin-bottom: 15px;
+  color: #495057;
+}
+
+.info-box {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.info-box h4 {
+  color: #007bff;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.info-box ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.info-box li {
+  margin-bottom: 8px;
+  color: #495057;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const stockActionSelect = document.getElementById('stock_action');
+  const transferLocationGroup = document.getElementById('transfer_location_group');
+  
+  if (stockActionSelect && transferLocationGroup) {
+    stockActionSelect.addEventListener('change', function() {
+      if (this.value === 'transfer') {
+        transferLocationGroup.style.display = 'block';
+      } else {
+        transferLocationGroup.style.display = 'none';
+        document.getElementById('transfer_to_location').value = '';
+      }
+    });
+  }
+});
+</script>

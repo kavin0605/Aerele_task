@@ -1,0 +1,165 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>📦 Record Product Movement</h2>
+
+<div class="card">
+  <form method="post">
+    <div class="form-group">
+      <label for="product_id">Product *</label>
+      <select id="product_id" name="product_id" required>
+        <option value="">-- Select Product --</option>
+        {% for p in products %}
+        <option value="{{ p.id }}" {% if movement and movement.product_id == p.id %}selected{% endif %}>{{ p.name }} ({{ p.id }})</option>
+        {% endfor %}
+      </select>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <div class="form-group">
+        <label for="from_location_id">From Location</label>
+        <select id="from_location_id" name="from_location_id">
+          <option value="">-- None (Adding Stock) --</option>
+          {% for l in locations %}
+          <option value="{{ l.id }}" {% if l.id == 'CHN-MAIN' %}selected{% endif %}>{{ l.name }} ({{ l.id }})</option>
+          {% endfor %}
+        </select>
+        <small style="color: #7f8c8d;">Chennai Main Branch is auto-selected for transfers</small>
+        <div id="from_stock_info" class="stock-info" style="display: none;">
+          <span class="stock-badge">Current Stock: <span id="from_stock_qty">0</span> units</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="to_location_id">To Location</label>
+        <select id="to_location_id" name="to_location_id">
+          <option value="">-- None (Removing Stock) --</option>
+          {% for l in locations %}
+          <option value="{{ l.id }}">{{ l.name }} ({{ l.id }})</option>
+          {% endfor %}
+        </select>
+        <small style="color: #7f8c8d;">Select destination for product transfer</small>
+        <div id="to_stock_info" class="stock-info" style="display: none;">
+          <span class="stock-badge">Current Stock: <span id="to_stock_qty">0</span> units</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="qty">Quantity *</label>
+      <input type="number" id="qty" name="qty" min="1" required placeholder="Enter quantity" />
+    </div>
+    
+    <div class="card" style="background: #f8f9fa; margin: 1rem 0;">
+      <h4>💡 Movement Types:</h4>
+      <ul>
+        <li><strong>📥 Stock In:</strong> Leave "From" empty, select "To" location</li>
+        <li><strong>📤 Stock Out:</strong> Select "From" location, leave "To" empty</li>
+        <li><strong>🔄 Transfer:</strong> Select both "From" and "To" locations</li>
+      </ul>
+    </div>
+    
+    <div class="form-actions">
+      <button type="submit" class="btn btn-success">💾 Record Movement</button>
+      <a href="{{ url_for('movements.list_movements') }}" class="btn btn-secondary">❌ Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script>
+// Add stock checking functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const productSelect = document.getElementById('product_id');
+    const fromLocationSelect = document.getElementById('from_location_id');
+    const toLocationSelect = document.getElementById('to_location_id');
+    const qtyInput = document.getElementById('qty');
+    
+    function updateStockInfo() {
+        const productId = productSelect.value;
+        const fromLocationId = fromLocationSelect.value;
+        const toLocationId = toLocationSelect.value;
+        
+        if (productId && fromLocationId) {
+            fetchStockInfo(productId, fromLocationId, 'from');
+        } else {
+            document.getElementById('from_stock_info').style.display = 'none';
+        }
+        
+        if (productId && toLocationId) {
+            fetchStockInfo(productId, toLocationId, 'to');
+        } else {
+            document.getElementById('to_stock_info').style.display = 'none';
+        }
+    }
+    
+    async function fetchStockInfo(productId, locationId, type) {
+        try {
+            const response = await fetch(`/movements/stock-info?product_id=${productId}&location_id=${locationId}`);
+            const data = await response.json();
+            
+            const stockQtyElement = document.getElementById(`${type}_stock_qty`);
+            const stockInfoElement = document.getElementById(`${type}_stock_info`);
+            
+            stockQtyElement.textContent = data.stock || 0;
+            stockInfoElement.style.display = 'block';
+            
+            // Add warning if stock is low when moving from location
+            if (type === 'from') {
+                const currentQty = parseInt(qtyInput.value) || 0;
+                const availableStock = data.stock || 0;
+                
+                if (currentQty > availableStock) {
+                    stockInfoElement.className = 'stock-info stock-warning';
+                } else {
+                    stockInfoElement.className = 'stock-info';
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching stock info:', error);
+        }
+    }
+    
+    // Add event listeners
+    productSelect.addEventListener('change', updateStockInfo);
+    fromLocationSelect.addEventListener('change', updateStockInfo);
+    toLocationSelect.addEventListener('change', updateStockInfo);
+    qtyInput.addEventListener('input', updateStockInfo);
+});
+</script>
+
+<style>
+.stock-info {
+    margin-top: 0.5rem;
+}
+
+.stock-badge {
+    display: inline-block;
+    background: #e3f2fd;
+    color: #1565c0;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.stock-warning .stock-badge {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+</style>
+{% endblock %}
