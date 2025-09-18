@@ -2,7 +2,10 @@
 
 ## Required Screenshots for Documentation
 
-Take screenshots of the following pages while the app is running at http://127.0.0.1:5000:
+Take screensho
+
+
+ts of the following pages while the app is running at http://127.0.0.1:5000:
 
 ### 1. dashboard.png
 - URL: http://127.0.0.1:5000
