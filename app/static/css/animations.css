@@ -1,0 +1,67 @@
+/* Animations Library */
+
+/* Fade Up */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  opacity: 0;
+  animation: fadeUp 500ms ease-out forwards;
+}
+
+/* Fade In */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.fade-in { opacity: 0; animation: fadeIn 450ms ease-out forwards; }
+
+/* Scale In */
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.scale-in { opacity: 0; animation: scaleIn 380ms ease-out forwards; }
+
+/* Slide In */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.slide-in { opacity: 0; animation: slideIn 420ms ease-out forwards; }
+
+/* Stagger helpers */
+.stagger > * { opacity: 0; }
+.stagger > *:nth-child(1) { animation-delay: 60ms; }
+.stagger > *:nth-child(2) { animation-delay: 120ms; }
+.stagger > *:nth-child(3) { animation-delay: 180ms; }
+.stagger > *:nth-child(4) { animation-delay: 240ms; }
+.stagger > *:nth-child(5) { animation-delay: 300ms; }
+
+/* Hover float */
+.hover-float { transition: transform 200ms ease, box-shadow 200ms ease; }
+.hover-float:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+/* Button ripple (CSS-only) */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at var(--r-x, 50%) var(--r-y, 50%), rgba(255,255,255,0.35), transparent 40%);
+  opacity: 0; transition: opacity 250ms ease;
+}
+
+.btn:active::after { opacity: 1; transition: opacity 450ms ease; }
+
+/* Page transitions */
+.page-enter { opacity: 0; transform: translateY(8px); }
+.page-enter-active { opacity: 1; transform: translateY(0); transition: 300ms ease; }

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Inventory Management System{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}" />
 </head>
 <body>
   <div class="container">
@@ -43,5 +44,7 @@
       {% block content %}{% endblock %}
     </div>
   </div>
+
+  <script src="{{ url_for('static', filename='js/animations.js') }}" defer></script>
 </body>
 </html>
